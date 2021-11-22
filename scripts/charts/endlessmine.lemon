@@ -1,0 +1,41 @@
+function void song.EndlessMine()
+{
+	// Intro
+	setupNote(1, 0x41)
+	setupNote(2, 0x50)
+	setupNote(4, 0x5f)
+
+	//setupNote(3, 0x6e)	//110
+
+	setupNote(1, 0xc8)
+	setupNote(4, 0xcd)	//205
+
+	setupNote(2, 0x136)	//310
+
+	setupNote(3, 0x19f)
+	setupNote(2, 0x1a4)	//420
+
+	setupNote(4, 0x20d)	//525
+
+	setupNote(1, 0x217)	//535	debis
+
+	setupNote(2, 0x27b)	//635
+	setupNote(1, 0x276)	//630
+
+	setupNote(4, 0x280)	//635 debis
+
+	setupNote(3, 0x2ee)	//710
+	setupNote(4, 0x2ee)	//710	debis
+
+	setupNote(3, 0x357)	//855
+	setupNote(4, 0x35c)	//860
+
+	setupNote(2, 0x35c)	//860	debis
+
+	// Main meat of the song
+	setupNote(1, 0x3cf)	//975
+	setupNote(1, 0x3d9)	//985
+	//setupNote(2, 0x3e8)	//1000
+	//setupNote(3, 0x3f2)	//1010
+
+}

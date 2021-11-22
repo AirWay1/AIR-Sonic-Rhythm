@@ -1,0 +1,38 @@
+function void song.LaunchBase1()
+{
+	// Intro
+	setupNote(3, 0x78)	//120
+	setupNote(4, 0x8c)	//140
+
+	setupNote(1, 0xaa)	//170
+	setupNote(2, 0xbe)	//190
+
+	setupNote(2, 0xf0)	//240
+	setupNote(1, 0x104)	//260
+
+	setupNote(4, 0x122)	//290
+	setupNote(3, 0x136)	//310
+
+	// Yoooooooo its the gooooooooooos
+	setupNote(3, 0x1f4)	//500
+	setupNote(1, 0x1f4)	//500
+
+	setupNote(3, 0x230)	//560
+	setupNote(2, 0x230)	//560
+
+	setupNote(3, 0x26c)	//620
+	setupNote(4, 0x26c)	//620
+
+	setupNote(1, 0x29e)	//670
+	setupNote(3, 0x29e)	//670
+	setupNote(2, 0x2a3)	//675
+	setupNote(4, 0x2a3)	//675
+
+	setupNote(1, 0x2da)	//730
+	setupNote(2, 0x2da)	//730
+
+	setupNote(3, 0x316)	//790
+	setupNote(4, 0x316)	//790
+
+	endSongCheck(0x316)
+}

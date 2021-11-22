@@ -1,0 +1,2 @@
+/* Note this is Frame Based when you apply a note offset. */
+global u16 sonicRhythm.Offset_n = 0

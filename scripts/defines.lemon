@@ -1,0 +1,8 @@
+// Define gameplay staes
+define u8 player.state.playingSong = 0x00
+define u8 player.state.gameOver = 0x01
+
+define u8 song.Rating_MISS = 0x00
+define u8 song.Rating_GOOD = 0x01
+define u8 song.Rating_GREAT = 0x02
+define u8 song.Rating_SUPER = 0x03

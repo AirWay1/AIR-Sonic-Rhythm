@@ -1,0 +1,16 @@
+{
+	// Pause Overlay That Is Over Everything When The Game Is Paused, But The Pause Feature Is Only In The Song Select For Some Forsaken Reason.
+	// also happens to be the game-over overlay.
+	"pause_overlay":      { "File": "misc/pause.png" },
+
+	// Pause overlay options and stuff.
+	"txt_pause_menu":	{ "File": "misc/pause_text.png", "Rect":"0,0,97,7",   "Center": "48,3" },
+	"txt_botplay_tog":	{ "File": "misc/pause_text.png", "Rect":"0,8,97,7",   "Center": "48,3" },
+	"txt_note_style":	{ "File": "misc/pause_text.png", "Rect":"0,8,97,7",   "Center": "48,3" },
+	"txt_exit_menu":	{ "File": "misc/pause_text.png", "Rect":"0,24,97,7",   "Center": "48,3" },
+	"txt_exit_air":	{ "File": "misc/pause_text.png", "Rect":"0,32,97,7",   "Center": "48,3" },
+
+	"txt_star":	{ "File": "misc/pause_text.png", "Rect":"99,17,6,6",   "Center": "3,2" },	//lol slightly off-centered because coding.trademarked(tm)
+	"txt_enable":	{ "File": "misc/pause_text.png", "Rect":"99,0,52,7",   "Center": "26,4" },
+	"txt_disable":	{ "File": "misc/pause_text.png", "Rect":"99,8,52,7",   "Center": "26,4" },
+}

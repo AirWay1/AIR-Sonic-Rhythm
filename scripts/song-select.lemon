@@ -1,0 +1,313 @@
+//# address-hook(0x00c570) end(0x00c860)
+function void DataSelectScreen()
+{
+	FadeOutScreenBlocking()
+
+#if STANDALONE
+	Game.onScreenFadedOutBeforeDataSelect()
+#endif
+
+	Menu.FadeInAfterInit()
+
+	DataSelect.update()
+}
+
+function void DataSelect.setup()
+{
+	VDP.Config.setActiveDisplay(false)
+	fn0011ca()
+
+	VDP.setWriteIncrement(1)
+	VDP.fillVRAMbyDMA(0, 0xd000, 0x2000)
+	VDP.setWriteIncrement(2)
+
+	VDP.Config.setActiveDisplay(true)
+	zeroMemory(0xffffac00, 0x400)
+	zeroMemory(0xffffb000, 0x2000)
+
+	VDP.Config.enableHInt(false)
+	VDP.Config.setNameTableBasePlaneA(0xe000)
+	VDP.Config.setNameTableBasePlaneB(0xc000)
+	VDP.Config.setNameTableBasePlaneW(0xe000)
+
+	VDP.Config.setVerticalScrolling(false, 0)	// Horizontal scrolling mode without scroll mask
+	VDP.Config.setRenderingModeConfiguration(false)
+	VDP.Config.setPlayfieldSizeInPixels(1024, 256)
+
+	u16[0xfffffb00] = 0
+	u32[0xfffffbfc] = 0xfffffb00
+	level.framecounter = 0
+	u16[0xffffeee2] = 0
+	u16[0xffffeee4] = 0
+
+	Enigma.decompress(0x39d2a2, 0xffff0000, 0x0001)
+	copyRectToVRAM(0xffff0000, 0xe000, 0x28, 0x1c)
+
+	Enigma.decompress(0x3a2020, 0xffff0000, 0x829f)
+}
+
+function void DataSelect.update()
+{
+	bool isPausedThisFrame = false
+
+	playRandomTrack()
+	while (true)
+	{
+		global.frame_state = 0x1e
+		waitForNextFrame()
+	@EntryPoint:
+
+		++level.framecounter
+
+		isPausedThisFrame = sonicRhythm.Paused
+
+		Renderer.resetSprites()
+		DataSelect.drawCustomPlanes()
+		if (isPlayingSong)
+		{
+			if (control.pad1.pressed & DataSelect.CONTROLS_CANCEL || Input.buttonPressed(BUTTON_BACK))
+			{
+				playSound(0xad)
+
+				isPlayingSong = false
+				playRandomTrack()
+			}
+		}
+		else
+		{
+			if (sonicRhythm.Paused)
+			{
+				drawPauseMenu()
+			}
+			else
+			{
+				if (control.pad1.pressed & CONTROL_START)
+				{
+					playSound(0x6d)
+					pauseMenuSelection = 0
+
+					sonicRhythm.Paused = true
+				}
+			}
+		}
+
+		if (isPlayingSong)
+		{
+			if ((player.Health >= 200) || (player.Health == 0))	// Since u8 values overflow to 255, we'll check for above 200. Why 200? No reason. Just thought it was cool.
+			{
+				// Oh no we game over'd :(
+				player.State = player.state.gameOver
+
+				song.Score = 0
+			}
+
+			// 50 things to render, 50 things to do. God help the performance.
+			checkForButtonPressesGameplay()
+			if (player.State == player.state.playingSong)
+				renderArrowsJudegement()
+			else
+				renderGameOver()
+			renderHealthBar()
+
+			drawSong()
+
+			displayRating()
+
+			Renderer.drawCustomSprite("press_b", 85, getScreenHeight() - 12, 0x00, 0, 0x3000)
+			System.writeDisplayLine(stringformat("%d", song.Score))
+		}
+		else
+		{
+			drawSongSelection(isPausedThisFrame)
+		}
+	}
+}
+
+function void drawPauseMenu()
+{
+	Renderer.drawCustomSprite("pause_overlay", getScreenExtend() - 40, 0, 0x00, 0, 0xfa000, 0, 0x8d)
+	Renderer.drawCustomSprite("txt_pause_menu", 49, 4, 0x00, 0, 0xff000)
+
+	if (control.pad1.pressed & CONTROL_UP)
+	{
+		pauseMenuSelection -= 1
+
+		if (pauseMenuSelection == 255)
+			pauseMenuSelection = 0
+		else
+			playSound(0x5b)
+	}
+	else if (control.pad1.pressed & CONTROL_DOWN)
+	{
+		pauseMenuSelection += 1
+
+		if (pauseMenuSelection >= 3)
+			pauseMenuSelection = 2
+		else
+			playSound(0x5b)
+	}
+	else if ((control.pad1.pressed & CONTROL_START) || (control.pad1.pressed & CONTROL_A))
+	{
+		if (pauseMenuSelection == 0)
+		{
+			sonicRhythm.Botplay = ((sonicRhythm.Botplay) ? false : true)
+
+			playSound(0xb7)
+		}
+		else if (pauseMenuSelection == 1)
+		{
+			playSound(0xad)
+
+			sonicRhythm.Paused = false
+		}
+		else if (pauseMenuSelection == 2)
+		{
+			playSound(0xad)
+
+			u32 backupA0 = A0
+			FadeOutScreenBlocking()
+			A0 = backupA0
+
+			// Do not fade out music in this case, Data Select music is meant to kept playing
+			Game.returnToMainMenu()
+			yieldExecution()
+		}
+	}
+
+	Renderer.drawCustomSprite("txt_botplay_tog", ((pauseMenuSelection == 0) ? 57 : 49), 20, 0x00, 0, 0xff000)
+	Renderer.drawCustomSprite("txt_exit_menu", ((pauseMenuSelection == 1) ? 57 : 49), 28, 0x00, 0, 0xff000)
+	Renderer.drawCustomSprite("txt_exit_air", ((pauseMenuSelection == 2) ? 57 : 49), 36, 0x00, 0, 0xff000)
+
+	Renderer.drawCustomSprite("txt_star", 12, 20 + (pauseMenuSelection * 8), 0x00, 0, 0xff500)
+
+	Renderer.drawCustomSprite(((sonicRhythm.Botplay) ? "txt_disable" : "txt_enable"), 140, 21, 0x00, 0, 0xff000)
+}
+
+function void drawSongSelection(bool isPausedThisFrame)
+{
+	// Currently all this rendering stuff is hardcoded to be one specific thing, but next update will hopefully feature less hardcoded sprites.
+	if (songMenuSelection == 2)
+		Renderer.drawCustomSprite("plchold_sonic_3_credits_name", 1, getScreenHeight() - 45, 0x00, 0, 0x3000)
+	else if (songMenuSelection == 1)
+		Renderer.drawCustomSprite("plchold_launch_base_1_name", 1, getScreenHeight() - 45, 0x00, 0, 0x3000)
+	else
+		Renderer.drawCustomSprite("plchold_endless_mine_name", 1, getScreenHeight() - 45, 0x00, 0, 0x3000)
+
+	Renderer.drawCustomSprite("composed_by", 92, getScreenHeight() - 29, 0x00, 0, 0x3000)
+
+	Renderer.drawCustomSprite("artist_sega", 17, getScreenHeight() - 17, 0x00, 0, 0x3000)
+	Renderer.drawCustomSprite("composer_artist_sega", 92, getScreenHeight() - 21, 0x00, 0, 0x3000)
+
+	Renderer.drawCustomSprite("song_selector", getScreenWidth() - 4, getScreenHeight() / 2, 0x00, 0, 0x3000)
+	drawSongList(songMenuSelection)	// The only loosly coded thing in here currently, though very cool.
+
+	if ((control.pad1.pressed & CONTROL_A) && (!sonicRhythm.Paused) && (!isPausedThisFrame))
+	{
+		if (songMenuSelection != 0)
+		{
+			resetSongVars()
+			Audio.stopChannel(0)
+			isPlayingSong = true
+
+			playSound(0xaf)
+		}
+		else
+		{
+			playSound(0xb2)
+		}
+	}
+	else if ((control.pad1.pressed & CONTROL_DOWN) && (!sonicRhythm.Paused) && (!isPausedThisFrame))
+	{
+		songMenuSelection -= 1
+
+		if (songMenuSelection == 255)
+			songMenuSelection = 0
+		else
+			playSound(0x5b)
+	}
+	else if ((control.pad1.pressed & CONTROL_UP) && (!sonicRhythm.Paused) && (!isPausedThisFrame))
+	{
+		songMenuSelection += 1
+
+		if (songMenuSelection >= 3)
+			songMenuSelection -=1
+		else
+			playSound(0x5b)
+	}
+}
+
+function void drawSongList(u8 songSelected)
+{
+	Renderer.drawCustomSprite("sonic_3_credits", getScreenWidth() - 64, (getScreenHeight() / 2 + (songSelected * 8)) - 16, 0x00, 0, 0x3000, 0, ((songMenuSelection == 2) ? 0xff : 0x7f))
+	Renderer.drawCustomSprite("launch_base_1", getScreenWidth() - 54, getScreenHeight() / 2 + (songSelected * 8) - 8, 0x00, 0, 0x3000, 0, ((songMenuSelection == 1) ? 0xff : 0x7f))
+	Renderer.drawCustomSprite("endless_mine", getScreenWidth() - 47, getScreenHeight() / 2 + (songSelected * 8), 0x00, 0, 0x3000, 0, ((songMenuSelection == 0) ? 0x7f : 0x7f))
+}
+
+function void drawSong()
+{
+	if (songMenuSelection == 2)
+		song.CreditsSonic3()
+	else
+		song.LaunchBase1()
+	//song.EndlessMine()
+}
+
+#if STANDALONE
+function void DataSelect.drawCustomPlanes()
+{
+	// Draw our own widescreen version of the background
+	// TODO: The actual background still gets rendered, though it's not visible at all
+	//  -> Maybe the plane W is used here?
+	if (isPlayingSong)
+	{	
+		Renderer.drawCustomSprite("background_gameplay", getScreenExtend() - 40, 0, 0x00, 0, 0x2000)
+	}
+	else
+	{
+		Renderer.drawCustomSprite("background_song_select", getScreenExtend() - 40, 0, 0x00, 0, 0x2000)
+		Renderer.drawCustomSprite("backend_song_select", getScreenExtend() - 40, 0, 0x00, 0, 0x2100, 0, 0x8d)
+	}
+
+	// Custom rendering of plane B (which is not the background here) to ignore the wrapping
+	s16 px = s16(camera.foreground.x.u16)
+	if (px < 0)
+	{
+		Renderer.enableDefaultPlane(2, false)
+		Renderer.setupPlane(-px, 0, getScreenWidth() + px, getScreenHeight(), 0x10, 0, 0x3000)
+	}
+	else if (px > 0x400 - getScreenWidth())
+	{
+		Renderer.enableDefaultPlane(2, false)
+		Renderer.setupPlane(0, 0, 0x400 - px, getScreenHeight(), 0x10, 0, 0x3000)
+	}
+}
+#endif
+
+//# address-hook(0x00d1fa) end(0x00d30a)
+function void fn00d1fa()
+{
+}
+//# address-hook(0x00d7ea) end(0x00d84e)
+function void fn00d7ea()
+{
+}
+//# address-hook(0x00c006) end(0x00c028)
+function void fn00c006()
+{
+}
+//# address-hook(0x00c890) end(0x00c95c)
+function void fn00c890()
+{
+}
+//# address-hook(0x00c97a) end(0x00ca12)
+function void fn00c97a()
+{
+}
+//# address-hook(0x00d7c0) end(0x00d7e6)
+function void fn00d7c0()
+{
+}
+//# address-hook(0x00d42c) end(0x00d69a)
+function void fn00d42c()
+{
+}

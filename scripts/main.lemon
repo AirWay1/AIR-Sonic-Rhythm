@@ -1,0 +1,375 @@
+
+/*
+	Sonic Rhythm Code created by AirWay1. Do not redistrubte in mods unless you are given my permission to do so. You may edit some functions for skin related purposes.
+*/
+
+// Define globals.
+global bool isPlayingSong = false
+
+global u8 fadeValue = 0
+global u8 fadeValue2 = 0
+global u8 pauseMenuSelection = 0
+global u8 songMenuSelection = 0
+
+global u8 player.Health
+global u8 player.State
+
+global s64 player.latestGoodLEFTPress = 0
+global s64 player.latestGoodDOWNPress = 0
+global s64 player.latestGoodUPPress = 0
+global s64 player.latestGoodRIGHTPress = 0
+
+global s32 song.Beat = 0
+global u64 song.Score = 0
+global u8 song.Rating.Timer = 0
+global u8 song.Rating.Name = 0
+
+global u8 sonicRhythm.NoteStyle
+global bool sonicRhythm.Botplay
+global bool sonicRhythm.Hitsounds
+global u8 sonicRhythm.Scrolly
+
+global bool sonicRhythm.Paused = false
+
+// Inclusions.
+include defines
+include song-select
+
+include charts/?
+include config/?
+include util/?
+
+function void checkForButtonPressesGameplay()
+{
+	if (!sonicRhythm.Botplay)
+	{
+		bool hitsound = false
+		if ((control.pad1.pressed & CONTROL_LEFT) || (control.pad1.pressed & CONTROL_DOWN) || (control.pad1.pressed & CONTROL_UP) || (control.pad1.pressed & CONTROL_RIGHT))
+		{
+			hitsound = (sonicRhythm.Hitsounds)
+		}
+
+		if (hitsound)
+		{
+			playSound(0x99)
+
+			// My nuts... hang. And, @everyone.
+			//if (allocDynamicObjectStd())
+			//{
+			//	objA1.update_address = 0x01d566
+			//	objA1.position.x = 100
+			//	objA1.position.y = 60
+
+			//	System.writeDisplayLine(stringformat("%x", objA1.position.y))
+			//}
+		}
+	}
+}
+
+function void renderArrowsJudegement()
+{
+	if ((sonicRhythm.Botplay) || (player.State == player.state.gameOver))
+	{
+		Renderer.drawCustomSprite(returnNoteStyle("left_judgement_unlit"), (getScreenWidth() / 2) - 30,  20, 0x00, 0, 0x3000, 0, 0xffffffff, 0x10000)
+		Renderer.drawCustomSprite(returnNoteStyle("down_judgement_unlit"), (getScreenWidth() / 2) - 10,  20, 0x00, 0, 0x3000, 0, 0xffffffff, 0x10000)
+		Renderer.drawCustomSprite(returnNoteStyle("up_judgement_unlit"), (getScreenWidth() / 2) + 10,  20, 0x00, 0, 0x3000, 0, 0xffffffff, 0x10000)
+		Renderer.drawCustomSprite(returnNoteStyle("right_judgement_unlit"), (getScreenWidth() / 2) + 30,  20, 0x00, 0, 0x3000, 0, 0xffffffff, 0x10000)
+	}
+	else
+	{
+			Renderer.drawCustomSprite(((control.pad1.state & CONTROL_LEFT) ? returnNoteStyle("left_judgement_lit") : returnNoteStyle("left_judgement_unlit")), (getScreenWidth() / 2) - 30,  20, 0x00, 0, 0x3000, 0, 0xffffffff, 0x10000)
+			Renderer.drawCustomSprite(((control.pad1.state & CONTROL_DOWN) ? returnNoteStyle("down_judgement_lit") : returnNoteStyle("down_judgement_unlit")), (getScreenWidth() / 2) - 10,  20, 0x00, 0, 0x3000, 0, 0xffffffff, 0x10000)
+		Renderer.drawCustomSprite(((control.pad1.state & CONTROL_UP) ? returnNoteStyle("up_judgement_lit") : returnNoteStyle("up_judgement_unlit")), (getScreenWidth() / 2) + 10,  20, 0x00, 0, 0x3000, 0, 0xffffffff, 0x10000)
+		Renderer.drawCustomSprite(((control.pad1.state & CONTROL_RIGHT) ? returnNoteStyle("right_judgement_lit") : returnNoteStyle("right_judgement_unlit")), (getScreenWidth() / 2) + 30,  20, 0x00, 0, 0x3000, 0, 0xffffffff, 0x10000)
+	}
+
+	if (player.State != player.state.gameOver)
+		song.Beat += sonicRhythm.Scrolly
+
+	if (song.Beat == 40)
+	{
+		if (songMenuSelection == 2)
+			Audio.playAudio("26")
+		else
+			Audio.playAudio("0d")
+	}
+}
+
+function void renderGameOver()
+{
+	if (fadeValue != 0x8d)
+		fadeValue += 1
+
+	if (fadeValue2 != 0xff)
+		fadeValue2 += 5
+
+	if (fadeValue == 0x01)
+	{
+		Audio.stopChannel(0)
+
+		playSound(0x37)
+		playSound(MUSIC_GAMEOVER)
+	}
+
+	Renderer.drawCustomSprite("pause_overlay", getScreenExtend() - 40, 0, 0x00, 0, 0xfa000, 0, fadeValue)
+	Renderer.drawCustomSprite("game_over", (getScreenWidth() / 2) - (0x8d - fadeValue), getScreenHeight() / 2, 0x00, 0, 0xff000, 0, fadeValue2)
+	Renderer.drawCustomSprite("a_retry", (getScreenWidth() / 2) + (0x8d - fadeValue), (getScreenHeight() / 2) + 8, 0x00, 0, 0xff000, 0, fadeValue2)
+	Renderer.drawCustomSprite("b_exit", (getScreenWidth() / 2) - (0x8d - fadeValue), (getScreenHeight() / 2) + 16, 0x00, 0, 0xff000, 0, fadeValue2)
+
+	if (control.pad1.pressed & CONTROL_A)
+	{
+		resetSongVars()
+		Audio.stopChannel(0)
+		isPlayingSong = true
+
+		playSound(0xaf)
+	}
+}
+
+function void renderHealthBar()
+{
+	Renderer.drawCustomSprite("healthbar", (getScreenWidth() / 2) - 48,  39, 0x00, 0, 0x3000, 0, 0xffffffff, 0x10000)
+
+	if (player.Health <= 20)
+	{
+		for (u8 i = 0; i < player.Health; i += 1)
+		{
+			Renderer.drawCustomSprite(stringformat("health_seg_%d", player.Health), (getScreenWidth() / 2) - 48,  20 + (i * 2), 0x00, 0, 0x3200, 0, 0xffffffff, 0x10000)
+		}
+	}
+}
+
+function void setupNote(u8 type, s64 delay)
+{
+	s64 noteDelay = delay - song.Beat + sonicRhythm.Offset_n + 60
+	if (sonicRhythm.Scrolly != 1)
+	{
+		noteDelay += delay * (sonicRhythm.Scrolly - 1)
+	}
+
+	if (noteDelay < -20)
+		return
+
+	if (player.State == player.state.gameOver)
+		return
+
+	if (type == 1)
+	{
+		if (player.latestGoodLEFTPress >= delay)
+			return
+
+		if (((control.pad1.pressed & CONTROL_LEFT) || (sonicRhythm.Botplay)) && (noteDelay <= 30 + sonicRhythm.Scrolly))
+		{
+			if (!doSharedNoteOptions(noteDelay))
+				return
+
+			player.latestGoodLEFTPress = delay
+		}
+		if (noteDelay <= 0)
+		{
+			//System.writeDisplayLine("miss")
+			player.Health -= 2
+			player.latestGoodLEFTPress = delay
+
+			song.Score -= 5
+		}
+		Renderer.drawCustomSprite(returnNoteStyle("left_note"), (getScreenWidth() / 2) - 30, noteDelay, 0x00, 0, 0x3100, 0, 0xffffffff, 0x10000)
+	}
+	else if (type == 2)
+	{
+		if (player.latestGoodDOWNPress >= delay)
+			return
+
+		if (((control.pad1.pressed & CONTROL_DOWN) || (sonicRhythm.Botplay)) && (noteDelay <= 30 + sonicRhythm.Scrolly))
+		{
+			if (!doSharedNoteOptions(noteDelay))
+				return
+
+			player.latestGoodDOWNPress = delay
+		}
+		if (noteDelay <= 0)
+		{
+			//System.writeDisplayLine("miss")
+			player.Health -= 2
+			player.latestGoodDOWNPress = delay
+
+			song.Score -= 5
+		}
+		Renderer.drawCustomSprite(returnNoteStyle("down_note"), (getScreenWidth() / 2) - 10, noteDelay, 0x00, 0, 0x3100, 0, 0xffffffff, 0x10000)
+	}
+	else if (type == 3)
+	{
+		if (player.latestGoodUPPress >= delay)
+			return
+
+		if (((control.pad1.pressed & CONTROL_UP) || (sonicRhythm.Botplay)) && (noteDelay <= 30 + sonicRhythm.Scrolly))
+		{
+			if (!doSharedNoteOptions(noteDelay))
+				return
+
+			player.latestGoodUPPress = delay
+		}
+		if (noteDelay <= 0)
+		{
+			//System.writeDisplayLine("miss")
+			player.Health -= 2
+			player.latestGoodUPPress = delay
+
+			song.Score -= 5
+		}
+		Renderer.drawCustomSprite(returnNoteStyle("up_note"), (getScreenWidth() / 2) + 10, noteDelay, 0x00, 0, 0x3100, 0, 0xffffffff, 0x10000)
+	}
+	else if (type == 4)
+	{
+		if (player.latestGoodRIGHTPress >= delay)
+			return
+
+		if (((control.pad1.pressed & CONTROL_RIGHT) || (sonicRhythm.Botplay)) && (noteDelay <= 30 + sonicRhythm.Scrolly))
+		{
+			if (!doSharedNoteOptions(noteDelay))
+				return
+
+			player.latestGoodRIGHTPress = delay
+		}
+		if (noteDelay <= 0)
+		{
+			//System.writeDisplayLine("miss")
+			player.Health -= 2
+			player.latestGoodRIGHTPress = delay
+
+			song.Score -= 5
+		}
+
+		Renderer.drawCustomSprite(returnNoteStyle("right_note"), (getScreenWidth() / 2) + 30, noteDelay, 0x00, 0, 0x3100, 0, 0xffffffff, 0x10000)
+	}
+}
+
+function bool noteCalculation(s64 delayed)
+{
+	delayed -= 20
+	if (delayed < 0)
+		delayed += 10
+	u8 newPlayerHealth = player.Health
+	bool shouldCancelNote = false
+
+	if (delayed == 0)	// Super rating
+	{
+		song.Rating.Name = song.Rating_SUPER
+		newPlayerHealth += 2
+
+		song.Score += 10
+	}
+	else if ((delayed >= 1) && (delayed <= 5 + sonicRhythm.Scrolly))	// Great rating
+	{
+		song.Rating.Name = song.Rating_GREAT
+		newPlayerHealth += 1
+
+		song.Score += 5
+	}
+	else	// Good rating
+	{
+		song.Rating.Name = song.Rating_GOOD
+
+		song.Score += 1
+	}
+
+	/*else	// Miss rating
+	{
+		song.Rating.Name = song.Rating_MISS
+		newPlayerHealth -= 1
+	}
+
+	else	// https://twitter.com/ootspongebob
+	{
+		System.writeDisplayLine("out of touch")
+		shouldCancelNote = true
+	}*/
+
+	if (newPlayerHealth > 20)
+		player.Health = 20
+	else
+		player.Health = newPlayerHealth
+
+	//System.writeDisplayLine(stringformat("%d", newPlayerHealth))
+
+	return shouldCancelNote
+}
+
+function bool doSharedNoteOptions(s64 notey)
+{
+	if (sonicRhythm.Botplay)
+	{
+		if (notey != 20)
+			return false
+
+		if (sonicRhythm.Hitsounds)
+			playSound(0x99)
+	}
+
+	if (noteCalculation(notey))
+		return false
+
+	song.Rating.Timer = 255
+	return true
+}
+
+function void displayRating()
+{
+	if (song.Rating.Timer == 0)
+		return
+
+	u64 key = "rating_super"
+
+	if (song.Rating.Name == song.Rating_GREAT)
+		key = "rating_great"
+	else if (song.Rating.Name == song.Rating_GOOD)
+		key = "rating_good"
+	else if (song.Rating.Name == song.Rating_MISS)
+		key = "rating_miss"
+
+	Renderer.drawCustomSprite(key, (getScreenWidth() / 2), (getScreenHeight() / 2) - 40, 0x00, 0, 0x3200, 0, song.Rating.Timer)	// Careful, this one has alpha channels!!!1!
+	song.Rating.Timer -= 5
+}
+
+function void resetSongVars()
+{
+	fadeValue = 0
+	fadeValue2 = 0
+
+	player.Health = 20
+	player.State = player.state.playingSong
+
+	player.latestGoodLEFTPress = 0
+	player.latestGoodDOWNPress = 0
+	player.latestGoodUPPress = 0
+	player.latestGoodRIGHTPress = 0
+
+	song.Beat = 0
+	song.Rating.Timer = 0
+	song.Rating.Name = 0
+	song.Score = 0
+
+	sonicRhythm.Paused = false
+}
+
+function void endSongCheck(s64 delay)
+{
+	s64 endDelay = delay - song.Beat + sonicRhythm.Offset_n + 60
+	if (sonicRhythm.Scrolly != 1)
+	{
+		endDelay += delay * (sonicRhythm.Scrolly - 1)
+	}
+
+	if (endDelay <= 20)
+	{
+		if (endDelay == 20)
+			 Audio.fadeOutChannel(0, 300)
+		else if (endDelay == -280)
+		{
+			playMusic(MUSIC_EXTRALIFE)
+
+			isPlayingSong = false
+			playRandomTrack()
+		}
+	}
+}

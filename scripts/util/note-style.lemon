@@ -1,0 +1,10 @@
+function u64 returnNoteStyle(u64 styled)	// Used for sprite things. Search for this in main.lemon for usage.
+{
+	u64 arrowStyle
+	if (sonicRhythm.NoteStyle == 1)
+		arrowStyle = "_bar"
+	else if (sonicRhythm.NoteStyle == 0)
+		arrowStyle = "_arrow"
+
+	return stringformat("%s%s", styled, arrowStyle)
+}

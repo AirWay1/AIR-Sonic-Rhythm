@@ -1,0 +1,71 @@
+{
+	// Gameplay Background
+	"background_gameplay":      { "File": "gameplay/background.png" },
+
+	// Finally, the most iconic gameplay element of all! The UI that tells you that B exits the song! Wow! Such information!
+	"press_b":	{ "File": "gameplay/press_b.png", "Rect":"0,0,169,7",   "Center": "84,4" },
+
+	// Judegement Arrows
+	"left_judgement_unlit_arrow":	{ "File": "gameplay/arrow.png", "Rect":"0,0,20,20",   "Center": "10,10" },
+	"down_judgement_unlit_arrow":	{ "File": "gameplay/arrow.png", "Rect":"21,0,20,20",   "Center": "10,10" },
+	"up_judgement_unlit_arrow":	{ "File": "gameplay/arrow.png", "Rect":"42,0,20,20",   "Center": "10,10" },
+	"right_judgement_unlit_arrow":	{ "File": "gameplay/arrow.png", "Rect":"63,0,20,20",   "Center": "10,10" },
+	"left_judgement_lit_arrow":	{ "File": "gameplay/arrow.png", "Rect":"0,21,20,20",   "Center": "10,10" },
+	"down_judgement_lit_arrow":	{ "File": "gameplay/arrow.png", "Rect":"21,21,20,20",   "Center": "10,10" },
+	"up_judgement_lit_arrow":	{ "File": "gameplay/arrow.png", "Rect":"42,21,20,20",   "Center": "10,10" },
+	"right_judgement_lit_arrow":	{ "File": "gameplay/arrow.png", "Rect":"63,21,20,20",   "Center": "10,10" },
+
+	"left_judgement_unlit_bar":	{ "File": "gameplay/bar.png", "Rect":"0,0,20,20",   "Center": "10,10" },
+	"down_judgement_unlit_bar":	{ "File": "gameplay/bar.png", "Rect":"21,0,20,20",   "Center": "10,10" },
+	"up_judgement_unlit_bar":	{ "File": "gameplay/bar.png", "Rect":"42,0,20,20",   "Center": "10,10" },
+	"right_judgement_unlit_bar":	{ "File": "gameplay/bar.png", "Rect":"63,0,20,20",   "Center": "10,10" },
+	"left_judgement_lit_bar":	{ "File": "gameplay/bar.png", "Rect":"0,21,20,20",   "Center": "10,10" },
+	"down_judgement_lit_bar":	{ "File": "gameplay/bar.png", "Rect":"21,21,20,20",   "Center": "10,10" },
+	"up_judgement_lit_bar":	{ "File": "gameplay/bar.png", "Rect":"42,21,20,20",   "Center": "10,10" },
+	"right_judgement_lit_bar":	{ "File": "gameplay/bar.png", "Rect":"63,21,20,20",   "Center": "10,10" },
+
+	// Notes
+	"left_note_arrow":	{ "File": "gameplay/arrow.png", "Rect":"0,42,20,20",   "Center": "10,10" },
+	"down_note_arrow":	{ "File": "gameplay/arrow.png", "Rect":"21,42,20,20",   "Center": "10,10" },
+	"up_note_arrow":	{ "File": "gameplay/arrow.png", "Rect":"42,42,20,20",   "Center": "10,10" },
+	"right_note_arrow":	{ "File": "gameplay/arrow.png", "Rect":"63,42,20,20",   "Center": "10,10" },
+
+	"left_note_bar":	{ "File": "gameplay/bar.png", "Rect":"0,42,20,20",   "Center": "10,10" },	// https://tenor.com/view/among-us-no-more-among-us-gif-21287843
+	"down_note_bar":	{ "File": "gameplay/bar.png", "Rect":"21,42,20,20",   "Center": "10,10" },
+	"up_note_bar":	{ "File": "gameplay/bar.png", "Rect":"42,42,20,20",   "Center": "10,10" },
+	"right_note_bar":	{ "File": "gameplay/bar.png", "Rect":"63,42,20,20",   "Center": "10,10" },
+
+	// Ratings
+	"rating_super":	{ "File": "gameplay/ratings.png", "Rect":"0,0,31,7",   "Center": "15,3" },
+	"rating_great":	{ "File": "gameplay/ratings.png", "Rect":"0,8,31,7",   "Center": "15,3" },
+	"rating_good":	{ "File": "gameplay/ratings.png", "Rect":"0,16,31,7",   "Center": "15,3" },
+	"rating_miss":	{ "File": "gameplay/ratings.png", "Rect":"0,24,31,7",   "Center": "15,3" },
+
+	// Healthbar (and inidvidual health segments... god i should find something to optimzie this)
+	"healthbar":	{ "File": "gameplay/healthbar.png", "Rect":"11,0,14,44",   "Center": "7,22" },
+	"health_seg_1":	{ "File": "gameplay/healthbar.png", "Rect":"0,0,10,2",   "Center": "5,1" },
+	"health_seg_2":	{ "File": "gameplay/healthbar.png", "Rect":"0,0,10,2",   "Center": "5,1" },
+	"health_seg_3":	{ "File": "gameplay/healthbar.png", "Rect":"0,0,10,2",   "Center": "5,1" },
+	"health_seg_4":	{ "File": "gameplay/healthbar.png", "Rect":"0,0,10,2",   "Center": "5,1" },
+	"health_seg_5":	{ "File": "gameplay/healthbar.png", "Rect":"0,0,10,2",   "Center": "5,1" },
+	"health_seg_6":	{ "File": "gameplay/healthbar.png", "Rect":"0,0,10,2",   "Center": "5,1" },
+	"health_seg_7":	{ "File": "gameplay/healthbar.png", "Rect":"0,0,10,2",   "Center": "5,1" },
+	"health_seg_8":	{ "File": "gameplay/healthbar.png", "Rect":"0,0,10,2",   "Center": "5,1" },
+	"health_seg_9":	{ "File": "gameplay/healthbar.png", "Rect":"0,0,10,2",   "Center": "5,1" },
+	"health_seg_10":	{ "File": "gameplay/healthbar.png", "Rect":"0,0,10,2",   "Center": "5,1" },
+	"health_seg_11":	{ "File": "gameplay/healthbar.png", "Rect":"0,0,10,2",   "Center": "5,1" },
+	"health_seg_12":	{ "File": "gameplay/healthbar.png", "Rect":"0,0,10,2",   "Center": "5,1" },
+	"health_seg_13":	{ "File": "gameplay/healthbar.png", "Rect":"0,0,10,2",   "Center": "5,1" },
+	"health_seg_14":	{ "File": "gameplay/healthbar.png", "Rect":"0,0,10,2",   "Center": "5,1" },
+	"health_seg_15":	{ "File": "gameplay/healthbar.png", "Rect":"0,0,10,2",   "Center": "5,1" },
+	"health_seg_16":	{ "File": "gameplay/healthbar.png", "Rect":"0,0,10,2",   "Center": "5,1" },
+	"health_seg_17":	{ "File": "gameplay/healthbar.png", "Rect":"0,0,10,2",   "Center": "5,1" },
+	"health_seg_18":	{ "File": "gameplay/healthbar.png", "Rect":"0,0,10,2",   "Center": "5,1" },
+	"health_seg_19":	{ "File": "gameplay/healthbar.png", "Rect":"0,0,10,2",   "Center": "5,1" },
+	"health_seg_20":	{ "File": "gameplay/healthbar.png", "Rect":"0,0,10,2",   "Center": "5,1" },
+
+	// Game Over Screen Sprites (the overlay is located in the misc)
+	"game_over":	{ "File": "gameplay/game_over.png", "Rect":"0,0,54,7",   "Center": "27,4" },
+	"a_retry":	{ "File": "gameplay/game_over.png", "Rect":"0,8,54,7",   "Center": "27,4" },
+	"b_exit":	{ "File": "gameplay/game_over.png", "Rect":"0,16,54,7",   "Center": "27,4" }
+}

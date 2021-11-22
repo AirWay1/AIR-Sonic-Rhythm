@@ -1,0 +1,23 @@
+{
+	// Song Select Backgrund and Darkness Behind Songs
+	"background_song_select":      { "File": "song_select/background.png" },
+	"backend_song_select":      { "File": "song_select/song_select_backend.png" },
+
+	// Artist Names
+	"composed_by": { "File": "song_select/artists/compose.png", "Rect":"0,0,117,7",   "Center": "58,4" },
+	"composer_artist_sega": { "File": "song_select/artists/compose.png", "Rect":"0,8,117,7",   "Center": "58,4" },
+
+	// Artist Icons
+	"artist_sega": { "File": "song_select/artists/sega.png", "Rect":"0,0,32,32",   "Center": "16,16" },
+
+	// Song Names (Large)
+	"plchold_sonic_3_credits_name":	{ "File": "song_select/song_names/sonic_3_credits.png", "Rect":"0,0,101,11",   "Center": "0,0" },
+	"plchold_launch_base_1_name":	{ "File": "song_select/song_names/launch_base_1.png", "Rect":"0,0,101,11",   "Center": "0,0" },
+	"plchold_endless_mine_name":	{ "File": "song_select/song_names/endless_mine.png", "Rect":"0,0,101,11",   "Center": "0,0" },
+
+	// Song Names (smol) and Selector
+	"song_selector":	{ "File": "song_select/song_names.png", "Rect":"0,0,7,7",   "Center": "4,4" },
+	"endless_mine":	{ "File": "song_select/song_names.png", "Rect":"17,0,89,7",   "Center": "52,4" },
+	"sonic_3_credits":	{ "File": "song_select/song_names.png", "Rect":"0,8,106,7",   "Center": "52,4" },
+	"launch_base_1":	{ "File": "song_select/song_names.png", "Rect":"10,16,106,7",   "Center": "52,4" }
+}
