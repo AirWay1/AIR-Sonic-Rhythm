@@ -1,0 +1,5 @@
+# the thing
+* text=auto
+
+# Lemonscript uses crlf line endings
+*.txt text eol=crlf

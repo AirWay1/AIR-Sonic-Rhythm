@@ -41,7 +41,7 @@ include util/?
 
 function void checkForButtonPressesGameplay()
 {
-	if (!sonicRhythm.Botplay)
+	if (!(sonicRhythm.Botplay || player.State == player.state.gameOver))
 	{
 		bool hitsound = false
 		if ((control.pad1.pressed & CONTROL_LEFT) || (control.pad1.pressed & CONTROL_DOWN) || (control.pad1.pressed & CONTROL_UP) || (control.pad1.pressed & CONTROL_RIGHT))
@@ -79,8 +79,8 @@ function void renderArrowsJudegement()
 	{
 			Renderer.drawCustomSprite(((control.pad1.state & CONTROL_LEFT) ? returnNoteStyle("left_judgement_lit") : returnNoteStyle("left_judgement_unlit")), (getScreenWidth() / 2) - 30,  20, 0x00, 0, 0x3000, 0, 0xffffffff, 0x10000)
 			Renderer.drawCustomSprite(((control.pad1.state & CONTROL_DOWN) ? returnNoteStyle("down_judgement_lit") : returnNoteStyle("down_judgement_unlit")), (getScreenWidth() / 2) - 10,  20, 0x00, 0, 0x3000, 0, 0xffffffff, 0x10000)
-		Renderer.drawCustomSprite(((control.pad1.state & CONTROL_UP) ? returnNoteStyle("up_judgement_lit") : returnNoteStyle("up_judgement_unlit")), (getScreenWidth() / 2) + 10,  20, 0x00, 0, 0x3000, 0, 0xffffffff, 0x10000)
-		Renderer.drawCustomSprite(((control.pad1.state & CONTROL_RIGHT) ? returnNoteStyle("right_judgement_lit") : returnNoteStyle("right_judgement_unlit")), (getScreenWidth() / 2) + 30,  20, 0x00, 0, 0x3000, 0, 0xffffffff, 0x10000)
+			Renderer.drawCustomSprite(((control.pad1.state & CONTROL_UP) ? returnNoteStyle("up_judgement_lit") : returnNoteStyle("up_judgement_unlit")), (getScreenWidth() / 2) + 10,  20, 0x00, 0, 0x3000, 0, 0xffffffff, 0x10000)
+			Renderer.drawCustomSprite(((control.pad1.state & CONTROL_RIGHT) ? returnNoteStyle("right_judgement_lit") : returnNoteStyle("right_judgement_unlit")), (getScreenWidth() / 2) + 30,  20, 0x00, 0, 0x3000, 0, 0xffffffff, 0x10000)
 	}
 
 	if (player.State != player.state.gameOver)

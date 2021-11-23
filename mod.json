@@ -56,14 +56,14 @@
 				"DisplayName": "Scroll Speed",
 				"Category": "Gameplay",
 				"Variable": "sonicRhythm.Scrolly",
-				"DefaultValue": "0",
+				"DefaultValue": "1",
 				"Options":
 				{
-					"1": "1",
-					"2": "2",
-					"4": "3",
-					"8": "4",
-					"10": "5",
+					"0x01": "1",
+					"0x02": "2",
+					"0x04": "3",
+					"0x08": "4",
+					"0x0a": "5"
 				}
 			}
 		]
