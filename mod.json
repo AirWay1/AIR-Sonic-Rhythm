@@ -3,8 +3,8 @@
 	{
 		"Name": "Sonic Rhythm",
 		"Author": "AirWay1",
-		"Description": "Test Mod",
-		"URL": "https://sonic3air.org/",
+		"Description": "Rhythm gaming in Sonic 3 A.I.R.. How!?",
+		"URL": "https://github.com/AirWay1/AIR-Sonic-Rhythm",
 		"ModVersion": "0.9999",
 		"GameVersion": "21.09.28.0"
 	},
@@ -21,7 +21,9 @@
 				"Options":
 				{
 					"0": "Arrows",
-					"1": "Bars"
+					"1": "Bars",
+					"2": "Circles",
+					"3": "Lemons"
 				}
 			}
 		],
@@ -56,14 +58,14 @@
 				"DisplayName": "Scroll Speed",
 				"Category": "Gameplay",
 				"Variable": "sonicRhythm.Scrolly",
-				"DefaultValue": "1",
+				"DefaultValue": "0x01",
 				"Options":
 				{
 					"0x01": "1",
 					"0x02": "2",
 					"0x04": "3",
 					"0x08": "4",
-					"0x0a": "5"
+					"0x0a": "5",
 				}
 			}
 		]

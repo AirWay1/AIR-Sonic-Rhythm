@@ -1,3 +1,6 @@
+global bool settingsMenu	// Defines here because yes. Also only really neccessary in this script so.
+global u8 switchJudge = 0
+
 //# address-hook(0x00c570) end(0x00c860)
 function void DataSelectScreen()
 {
@@ -90,21 +93,12 @@ function void DataSelect.update()
 			}
 
 			// 50 things to render, 50 things to do. God help the performance.
-			checkForButtonPressesGameplay()
-
-			if (player.State == player.state.playingSong)
-				renderArrowsJudegement()
+			if (player.State == player.state.playingSong)	// State change.
+				state.MainLoop()
 			else
-				renderGameOver()
+				state.GameOver()
 
-			renderHealthBar()
-
-			drawSong()
-
-			displayRating()
-
-			Renderer.drawCustomSprite("press_b", 85, getScreenHeight() - 12, 0x00, 0, 0x3000)
-			System.writeDisplayLine(stringformat("%d", song.Score))
+			rendering.HandleRenderingGameplay()
 		}
 		else
 		{
@@ -125,7 +119,7 @@ function void drawPauseMenu()
 		playSound(0x5b)
 
 		if (pauseMenuSelection == 255)
-			pauseMenuSelection = 2
+			pauseMenuSelection = ((settingsMenu) ? 4 : 2)
 	}
 	else if (control.pad1.pressed & CONTROL_DOWN)
 	{
@@ -133,44 +127,130 @@ function void drawPauseMenu()
 
 		playSound(0x5b)
 
-		if (pauseMenuSelection >= 3)
+		if (pauseMenuSelection >= ((settingsMenu) ? 5 : 3))
 			pauseMenuSelection = 0
 	}
-	else if ((control.pad1.pressed & CONTROL_START) || (control.pad1.pressed & CONTROL_A))
+
+	if (settingsMenu)
 	{
+		if ((control.pad1.pressed & CONTROL_LEFT) || (control.pad1.pressed & CONTROL_RIGHT))
+		{
+			if (pauseMenuSelection == 0)
+			{
+				sonicRhythm.NoteStyle += ((control.pad1.pressed & CONTROL_LEFT) ? -1 : 1)
+				if (sonicRhythm.NoteStyle > 3)
+					sonicRhythm.NoteStyle = ((control.pad1.pressed & CONTROL_LEFT) ? 3 : 0)
+
+				playSound(0xb7)
+			}
+			//else if (pauseMenuSelection == 1)
+		}
+		else if ((control.pad1.pressed & CONTROL_START) || (control.pad1.pressed & CONTROL_A))
+		{
+			if (pauseMenuSelection == 1)
+			{
+				sonicRhythm.Botplay = ((sonicRhythm.Botplay) ? false : true)
+
+				playSound(0xb7)
+			}
+			else if (pauseMenuSelection == 2)
+			{
+				sonicRhythm.Hitsounds = ((sonicRhythm.Hitsounds) ? false : true)
+
+				playSound(0xb7)
+			}
+			else if (pauseMenuSelection == 4)
+			{
+				playSound(0xad)
+
+				sonicRhythm.Paused = false
+				settingsMenu = false
+			}
+		}
+
+		Renderer.drawCustomSprite("txt_notestyle_tog", ((pauseMenuSelection == 0) ? 57 : 49), 20, 0x00, 0, 0xff000)
+		Renderer.drawCustomSprite("txt_botplay_tog", ((pauseMenuSelection == 1) ? 57 : 49), 28, 0x00, 0, 0xff000)
+		Renderer.drawCustomSprite("txt_hitsounds_tog", ((pauseMenuSelection == 2) ? 57 : 49), 36, 0x00, 0, 0xff000)
+		Renderer.drawCustomSprite("txt_scrollspeed_tog", ((pauseMenuSelection == 3) ? 57 : 49), 44, 0x00, 0, 0xff000)
+		Renderer.drawCustomSprite("txt_exit_menu", ((pauseMenuSelection == 4) ? 57 : 49), 52, 0x00, 0, 0xff000)
+
 		if (pauseMenuSelection == 0)
 		{
-			sonicRhythm.Botplay = ((sonicRhythm.Botplay) ? false : true)
+			Renderer.drawCustomSprite(((control.pad1.state & CONTROL_LEFT) ? "txt_left_sel" : "txt_left"), 123, 21, 0x00, 0, 0xff000)
+			Renderer.drawCustomSprite(((control.pad1.state & CONTROL_RIGHT) ? "txt_right_sel" : "txt_right"), 133, 21, 0x00, 0, 0xff000)
 
-			playSound(0xb7)
+			if (level.framecounter % 0x1e == 0)
+			{
+				switchJudge += 1
+
+				if (switchJudge == 3)
+					switchJudge = 0
+			}
+
+			// Draw gameplay sprites.
+			Renderer.drawCustomSprite(returnNoteStyle(((switchJudge == 0) ? "left_judgement_unlit" : (switchJudge == 1) ? "left_judgement_hold" : "left_judgement_lit")), getScreenWidth() - 80,  20, 0x00, 0, 0xff000, 0, 0xffffffff, 0x10000)
+			Renderer.drawCustomSprite(returnNoteStyle(((switchJudge == 0) ? "down_judgement_unlit" : (switchJudge == 1) ? "down_judgement_hold" : "down_judgement_lit")), getScreenWidth() - 60,  20, 0x00, 0, 0xff000, 0, 0xffffffff, 0x10000)
+			Renderer.drawCustomSprite(returnNoteStyle(((switchJudge == 0) ? "up_judgement_unlit" : (switchJudge == 1) ? "up_judgement_hold" : "up_judgement_lit")), getScreenWidth() - 40,  20, 0x00, 0, 0xff000, 0, 0xffffffff, 0x10000)
+			Renderer.drawCustomSprite(returnNoteStyle(((switchJudge == 0) ? "right_judgement_unlit" : (switchJudge == 1) ? "right_judgement_hold" : "right_judgement_lit")), getScreenWidth() - 20,  20, 0x00, 0, 0xff000, 0, 0xffffffff, 0x10000)
+
+			Renderer.drawCustomSprite(returnNoteStyle("left_note"), getScreenWidth() - 80,  40, 0x00, 0, 0xff000)
+			Renderer.drawCustomSprite(returnNoteStyle("down_note"), getScreenWidth() - 60,  40, 0x00, 0, 0xff000)
+			Renderer.drawCustomSprite(returnNoteStyle("up_note"), getScreenWidth() - 40,  40, 0x00, 0, 0xff000)
+			Renderer.drawCustomSprite(returnNoteStyle("right_note"), getScreenWidth() - 20,  40, 0x00, 0, 0xff000)
+
+			Renderer.drawCustomSprite(returnNoteStyle("long_left_note"), getScreenWidth() - 80,  60, 0x00, 0, 0xff000)
+			Renderer.drawCustomSprite(returnNoteStyle("long_down_note"), getScreenWidth() - 60,  60, 0x00, 0, 0xff000)
+			Renderer.drawCustomSprite(returnNoteStyle("long_up_note"), getScreenWidth() - 40,  60, 0x00, 0, 0xff000)
+			Renderer.drawCustomSprite(returnNoteStyle("long_right_note"), getScreenWidth() - 20,  60, 0x00, 0, 0xff000)
+
+			Renderer.drawCustomSprite(returnNoteStyle("long_left_note_end"), getScreenWidth() - 80,  80, 0x00, 0, 0xff000)
+			Renderer.drawCustomSprite(returnNoteStyle("long_down_note_end"), getScreenWidth() - 60,  80, 0x00, 0, 0xff000)
+			Renderer.drawCustomSprite(returnNoteStyle("long_up_note_end"), getScreenWidth() - 40,  80, 0x00, 0, 0xff000)
+			Renderer.drawCustomSprite(returnNoteStyle("long_right_note_end"), getScreenWidth() - 20,  80, 0x00, 0, 0xff000)
 		}
-		else if (pauseMenuSelection == 1)
+		else if (pauseMenuSelection == 3)
 		{
-			playSound(0xad)
-
-			sonicRhythm.Paused = false
+			Renderer.drawCustomSprite(((control.pad1.state & CONTROL_LEFT) ? "txt_left_sel" : "txt_left"), 123, 45, 0x00, 0, 0xff000)
+			Renderer.drawCustomSprite(((control.pad1.state & CONTROL_RIGHT) ? "txt_right_sel" : "txt_right"), 133, 45, 0x00, 0, 0xff000)
 		}
-		else if (pauseMenuSelection == 2)
+		Renderer.drawCustomSprite(((sonicRhythm.Botplay) ? "txt_enable" : "txt_disable"), 160, 29, 0x00, 0, 0xff000)
+		Renderer.drawCustomSprite(((sonicRhythm.Hitsounds) ? "txt_enable" : "txt_disable"), 160, 37, 0x00, 0, 0xff000)
+	}
+	else
+	{
+		if ((control.pad1.pressed & CONTROL_START) || (control.pad1.pressed & CONTROL_A))
 		{
-			playSound(0xad)
+			if (pauseMenuSelection == 0)
+			{
+				settingsMenu = true
+				pauseMenuSelection = 1
+			}
+			else if (pauseMenuSelection == 1)
+			{
+				playSound(0xad)
 
-			u32 backupA0 = A0
-			FadeOutScreenBlocking()
-			A0 = backupA0
+				sonicRhythm.Paused = false
+			}
+			else if (pauseMenuSelection == 2)
+			{
+				playSound(0xad)
 
-			// Do not fade out music in this case, Data Select music is meant to kept playing
-			Game.returnToMainMenu()
-			yieldExecution()
+				u32 backupA0 = A0
+				FadeOutScreenBlocking()
+				A0 = backupA0
+
+				// Do not fade out music in this case, Data Select music is meant to kept playing
+				Game.returnToMainMenu()
+				yieldExecution()
+			}
 		}
+
+		Renderer.drawCustomSprite("txt_quick_set", ((pauseMenuSelection == 0) ? 57 : 49), 20, 0x00, 0, 0xff000)
+		Renderer.drawCustomSprite("txt_exit_menu", ((pauseMenuSelection == 1) ? 57 : 49), 28, 0x00, 0, 0xff000)
+		Renderer.drawCustomSprite("txt_exit_air", ((pauseMenuSelection == 2) ? 57 : 49), 36, 0x00, 0, 0xff000)
 	}
 
-	Renderer.drawCustomSprite("txt_botplay_tog", ((pauseMenuSelection == 0) ? 57 : 49), 20, 0x00, 0, 0xff000)
-	Renderer.drawCustomSprite("txt_exit_menu", ((pauseMenuSelection == 1) ? 57 : 49), 28, 0x00, 0, 0xff000)
-	Renderer.drawCustomSprite("txt_exit_air", ((pauseMenuSelection == 2) ? 57 : 49), 36, 0x00, 0, 0xff000)
-
 	Renderer.drawCustomSprite("txt_star", 12, 20 + (pauseMenuSelection * 8), 0x00, 0, 0xff500)
-
-	Renderer.drawCustomSprite(((sonicRhythm.Botplay) ? "txt_disable" : "txt_enable"), 140, 21, 0x00, 0, 0xff000)
 }
 
 function void drawSongSelection(bool isPausedThisFrame)
@@ -193,37 +273,31 @@ function void drawSongSelection(bool isPausedThisFrame)
 
 	if ((control.pad1.pressed & CONTROL_A) && (!sonicRhythm.Paused) && (!isPausedThisFrame))
 	{
-		if (songMenuSelection != 0) // Check against Endless Mine (temp)
-		{
-			resetSongVars()
-			Audio.stopChannel(0)
-			isPlayingSong = true
+		audioSelection(true)	// Set the BPM.
 
-			playSound(0xaf)
-		}
-		else
-		{
-			// oops sorry no endless mine available yet!
-			playSound(0xb2)
-		}
+		resetSongVars()
+		Audio.stopChannel(0)
+		isPlayingSong = true
+
+		playSound(0xaf)
 	}
 	else if ((control.pad1.pressed & CONTROL_DOWN) && (!sonicRhythm.Paused) && (!isPausedThisFrame))
 	{
 		songMenuSelection -= 1
 
+		playSound(0x5b)
+
 		if (songMenuSelection == 255)
-			songMenuSelection = 0
-		else
-			playSound(0x5b)
+			songMenuSelection = 2
 	}
 	else if ((control.pad1.pressed & CONTROL_UP) && (!sonicRhythm.Paused) && (!isPausedThisFrame))
 	{
 		songMenuSelection += 1
 
+		playSound(0x5b)
+
 		if (songMenuSelection >= 3)
-			songMenuSelection -=1
-		else
-			playSound(0x5b)
+			songMenuSelection = 0
 	}
 }
 
@@ -231,30 +305,29 @@ function void drawSongList(u8 songSelected)
 {
 	Renderer.drawCustomSprite("sonic_3_credits", getScreenWidth() - 64, (getScreenHeight() / 2 + (songSelected * 8)) - 16, 0x00, 0, 0x3000, 0, ((songMenuSelection == 2) ? 0xff : 0x7f))
 	Renderer.drawCustomSprite("launch_base_1", getScreenWidth() - 54, getScreenHeight() / 2 + (songSelected * 8) - 8, 0x00, 0, 0x3000, 0, ((songMenuSelection == 1) ? 0xff : 0x7f))
-	Renderer.drawCustomSprite("endless_mine", getScreenWidth() - 47, getScreenHeight() / 2 + (songSelected * 8), 0x00, 0, 0x3000, 0, ((songMenuSelection == 0) ? 0x7f : 0x7f))
+	Renderer.drawCustomSprite("endless_mine", getScreenWidth() - 47, getScreenHeight() / 2 + (songSelected * 8), 0x00, 0, 0x3000, 0, ((songMenuSelection == 0) ? 0xff : 0x7f))
 }
 
 
-function void drawSong()
+function void drawSongChart()
 {
 	if (songMenuSelection == 2)
 		song.CreditsSonic3()
-	else
+	else if (songMenuSelection == 1)
 		song.LaunchBase1()
-
-//	song.EndlessMine()
+	else
+		song.EndlessMine()
 }
 
 function void DataSelect.drawCustomPlanes()
 {
 	if (isPlayingSong)
 	{
-		Renderer.drawCustomSprite("background_gameplay", getScreenExtend() - 40, 0, 0x00, 0, 0x2000)
+		rendering.GameplayBackground()
 	}
 	else
 	{
-		Renderer.drawCustomSprite("background_song_select", getScreenExtend() - 40, 0, 0x00, 0, 0x2000)
-		Renderer.drawCustomSprite("backend_song_select", getScreenExtend() - 40, 0, 0x00, 0, 0x2100, 0, 0x8d)
+		rendering.SongSelectBackground()
 	}
 }
 

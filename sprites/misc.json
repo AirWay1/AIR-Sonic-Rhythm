@@ -5,12 +5,21 @@
 
 	// Pause overlay options and stuff.
 	"txt_pause_menu":	{ "File": "misc/pause_text.png", "Rect":"0,0,97,7",   "Center": "48,3" },
-	"txt_botplay_tog":	{ "File": "misc/pause_text.png", "Rect":"0,8,97,7",   "Center": "48,3" },
-	"txt_note_style":	{ "File": "misc/pause_text.png", "Rect":"0,8,97,7",   "Center": "48,3" },
-	"txt_exit_menu":	{ "File": "misc/pause_text.png", "Rect":"0,24,97,7",   "Center": "48,3" },
-	"txt_exit_air":	{ "File": "misc/pause_text.png", "Rect":"0,32,97,7",   "Center": "48,3" },
+	"txt_quick_set":	{ "File": "misc/pause_text.png", "Rect":"0,8,97,7",   "Center": "48,3" },
+	"txt_exit_menu":	{ "File": "misc/pause_text.png", "Rect":"0,16,97,7",   "Center": "48,3" },
+	"txt_exit_air":	{ "File": "misc/pause_text.png", "Rect":"0,24,97,7",   "Center": "48,3" },
+	"txt_notestyle_tog":	{ "File": "misc/pause_text.png", "Rect":"0,32,97,7",   "Center": "48,3" },
+	"txt_botplay_tog":	{ "File": "misc/pause_text.png", "Rect":"0,40,104,7",   "Center": "48,3" },
+	"txt_hitsounds_tog":	{ "File": "misc/pause_text.png", "Rect":"0,48,104,7",   "Center": "48,3" },
+	"txt_scrollspeed_tog":	{ "File": "misc/pause_text.png", "Rect":"0,56,104,7",   "Center": "48,3" },
 
-	"txt_star":	{ "File": "misc/pause_text.png", "Rect":"99,17,6,6",   "Center": "3,2" },	//lol slightly off-centered because coding.trademarked(tm)
-	"txt_enable":	{ "File": "misc/pause_text.png", "Rect":"99,0,52,7",   "Center": "26,4" },
-	"txt_disable":	{ "File": "misc/pause_text.png", "Rect":"99,8,52,7",   "Center": "26,4" },
+	"txt_star":	{ "File": "misc/pause_text.png", "Rect":"106,17,6,6",   "Center": "3,2" },	//lol slightly off-centered because coding.trademarked(tm)
+	"txt_enable":	{ "File": "misc/pause_text.png", "Rect":"106,0,67,7",   "Center": "41,4" },
+	"txt_disable":	{ "File": "misc/pause_text.png", "Rect":"106,8,67,7",   "Center": "41,4" },
+
+	"txt_left":	{ "File": "misc/pause_text.png", "Rect":"106,64,7,7",   "Center": "4,4" },
+	"txt_right":	{ "File": "misc/pause_text.png", "Rect":"114,64,7,7",   "Center": "4,4" },
+
+	"txt_left_sel":	{ "File": "misc/pause_text.png", "Rect":"122,64,7,7",   "Center": "4,4" },
+	"txt_right_sel":	{ "File": "misc/pause_text.png", "Rect":"130,64,7,7",   "Center": "4,4" }
 }

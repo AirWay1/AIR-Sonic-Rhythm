@@ -12,6 +12,6 @@ Left - D
 Right - K
 
 # Credits
-Dynamic Lemons - SEGA/Sonic Team artist logo. Also currently the mod icon until I create one.
+Dynamic Lemons - SEGA/Sonic Team artist logo and the "Lemons" skin. Also currently the mod icon until I create one.
 
 Lave slime - Code contributor

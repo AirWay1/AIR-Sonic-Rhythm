@@ -1,125 +1,41 @@
 function void song.CreditsSonic3()
 {
-	// Intro
-	setupNote(2, 0xaf)
+	// Main medley
+	setupNote(2, 0x00, "")
+	
+	setupNote(1, 0x08, "")
+	setupLongNote(1, 0x09, 0x0f)
 
-	setupNote(1, 0xc8)
-	setupNote(4, 0xc8)
+	setupNote(4, 0x3c, "")
+	setupLongNote(4, 0x3d, 0x3f)
 
-	setupNote(2, 0x131)
-	setupNote(3, 0x131)
+	setupNote(2, 0x98, "")
+	setupLongNote(2, 0x99, 0x0f)
+	
+	setupNote(1, 0xc8, "")
+	setupLongNote(1, 0xc9, 0x0f)
+	
+	setupNote(2, 0xf8, "")
+	setupLongNote(2, 0xf9, 0x0f)
+	
+	setupNote(3, 0x130, "")
+	
+	setupNote(2, 0x150, "")
+	setupNote(3, 0x168, "")
+	
+	setupNote(2, 0x178, "")
+	setupNote(4, 0x190, "")
 
-	setupNote(4, 0x168)	//ebn
-	setupNote(1, 0x17c)
-	setupNote(2, 0x195)
-	setupNote(3, 0x195)	//400 iin dec
-
-	// Main song
-	setupNote(3, 0x1ae)	//debis
-	setupNote(3, 0x1e0)
-
-	setupNote(2, 0x1f9)
-	setupNote(4, 0x1f9)
-
-	setupNote(2, 0x212)	//debis
-	setupNote(2, 0x244)
-
-	setupNote(1, 0x25d)
-	setupNote(3, 0x25d)
-
-	setupNote(4, 0x276)	//debis
-	setupNote(4, 0x2a8)
-
-	setupNote(1, 0x2c1)
-	setupNote(2, 0x2c1)
-
-	setupNote(1, 0x2da)
-
-	setupNote(4, 0x2fd)	//ebn, 765
-	setupNote(3, 0x2fd)
-	setupNote(4, 0x311)
-	setupNote(1, 0x325)	//805
-	setupNote(2, 0x325)
-
-	setupNote(2, 0x33e)	//debis again
-	setupNote(2, 0x370)
-
-	setupNote(3, 0x389)
-	setupNote(4, 0x389)
-
-	setupNote(1, 0x3a2)	//debis
-	setupNote(1, 0x3d4)
-
-	setupNote(2, 0x3ed)
-	setupNote(4, 0x3ed)
-
-	setupNote(2, 0x406)	//debis
-	setupNote(2, 0x438)
-
-	setupNote(1, 0x451)
-	setupNote(4, 0x451)	//1105
-
-	setupNote(3, 0x46a)	//1130
-
-	setupNote(2, 0x48d)	//ebn, 1165
-	setupNote(1, 0x48d)
-	setupNote(4, 0x4a1)	//1185
-	setupNote(3, 0x4a1)
-	setupNote(1, 0x4b5)	//1205
-	setupNote(2, 0x4b5)
-
-	setupNote(4, 0x4ce)	//debis again
-	setupNote(4, 0x500)
-
-	setupNote(1, 0x519)
-	setupNote(2, 0x519)
-
-	setupNote(3, 0x532)	//debis
-	setupNote(3, 0x564)
-
-	setupNote(2, 0x57d)	//1405
-	setupNote(3, 0x57d)
-
-	setupNote(2, 0x596)	//debis
-	setupNote(2, 0x5c8)
-
-	setupNote(2, 0x5e1)
-	setupNote(4, 0x5e1)
-
-	setupNote(4, 0x5fa)	//1530
-
-	setupNote(2, 0x61d)	//ebn, 1565
-	setupNote(4, 0x61d)
-	setupNote(3, 0x631)
-	setupNote(1, 0x631)
-	setupNote(2, 0x645)	//1605
-	setupNote(4, 0x645)
-
-	setupNote(1, 0x65e)	//debis again and again
-	setupNote(1, 0x690)	//very nice
-
-	setupNote(1, 0x6a9)
-	setupNote(2, 0x6a9)
-
-	setupNote(2, 0x6c2)	//debis
-	setupNote(2, 0x6f4)
-
-	setupNote(2, 0x70d)	//1805
-	setupNote(4, 0x70d)
-
-	setupNote(4, 0x726)	//debis
-	setupNote(4, 0x758)
-
-	setupNote(4, 0x771)
-	setupNote(3, 0x771)
-
-	setupNote(4, 0x78a)	//1930
-
-	setupNote(1, 0x7ad)	//ebn, 1965
-	setupNote(4, 0x7ad)
-	setupNote(1, 0x7c1)	//1985
-	setupNote(1, 0x7d5)	//2005
-	setupNote(3, 0x7d5)
-
-	endSongCheck(0x7ee)	//Finally, the end of pain. At least for this demo *wink* *wink* *;)* *totally not gonna chart this more* *oh god the pain*
+	// Background drums / crashes
+	/*setupNote(3, 0xb0, "")
+	setupNote(4, 0xc8, "")
+	setupNote(1, 0x130, "")
+	
+	setupNote(1, 0x170, "")
+	setupNote(1, 0x180, "")
+	setupNote(1, 0x190, "")
+	
+	setupNote(3, 0x1b0, "")
+	setupNote(3, 0x1dc, "")
+	setupNote(1, 0x1f4, "")*/
 }
