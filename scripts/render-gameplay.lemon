@@ -1,0 +1,119 @@
+/*
+
+	Any scripts in here are available to modify for skin related purposes.
+	
+	Hell copy and paste the whole file over to your skin mod if you wish.
+	
+	And no. Crediting AirWay1 (me) is not required if you use these scripts strictly.
+	
+*/
+
+define u8 leftNoteOffset = -30
+define u8 downNoteOffset = -10
+define u8 upNoteOffset = 10
+define u8 rightNoteOffset = 30
+
+function void rendering.GameOverScreen()
+{
+	// fadeValue increases by 3 up to 0x8d (141).
+	// fadeValue2 increases by 5 up to 0xff (255).
+	// Keep these in mind as you edit this.
+	
+	Renderer.drawCustomSprite("pause_overlay", getScreenExtend() - 40, 0, 0x00, 0, 0xfa000, 0, fadeValue)
+	Renderer.drawCustomSprite("game_over", (getScreenWidth() / 2) - (0x8d - fadeValue), getScreenHeight() / 2, 0x00, 0, 0xff000, 0, fadeValue2)
+	Renderer.drawCustomSprite("a_retry", (getScreenWidth() / 2) + (0x8d - fadeValue), (getScreenHeight() / 2) + 8, 0x00, 0, 0xff000, 0, fadeValue2)
+	Renderer.drawCustomSprite("b_exit", (getScreenWidth() / 2) - (0x8d - fadeValue), (getScreenHeight() / 2) + 16, 0x00, 0, 0xff000, 0, fadeValue2)
+}
+
+function void rendering.GameplayBackground()
+{
+	Renderer.drawCustomSprite("background_gameplay", getScreenExtend() - 40, 0, 0x00, 0, 0x2000)
+}
+
+// Main gameplay loop rendering. Would suggest leaving as is unless you are adding something to the rendering process.
+function void rendering.HandleRenderingGameplay()
+{
+	rendering.Judgement()
+	rendering.HealthBar()
+
+	ratingHandler()
+
+	if (player.State == player.state.gameOver)	// Only start rendering game over sprites during hte gmae over state.
+		rendering.GameOverScreen()
+
+	Renderer.drawCustomSprite("press_b", 85, getScreenHeight() - 12, 0x00, 0, 0x3000)	// Classic "press_b" moment.
+	
+	System.writeDisplayLine(stringformat("%d", song.Score))	// Ability to render text should be in next A.I.R. update... hopefully.
+}
+
+function void rendering.HealthBar()
+{
+	Renderer.drawCustomSprite("healthbar", (getScreenWidth() / 2) - 48,  39, 0x00, 0, 0x3000, 0, 0xffffffff, 0x10000)	// The bar itself.
+
+	if (player.Health <= 20)
+	{
+		// Before anyone says... yes this is directly snipped from the sample script. I cannot figure this out for the life of me LOL. Please spare me.
+		s32 sin = sin_s32(0)
+		s32 cos = cos_s32(0)
+
+		s64 scaleX = 0x10000
+		s64 scaleY = 0x10000 * player.Health
+
+		s32 m11 =  cos * scaleX / 0x10000
+		s32 m12 = -sin * scaleY / 0x10000
+		s32 m21 =  sin * scaleX / 0x10000
+		s32 m22 =  cos * scaleY / 0x10000
+
+		Renderer.drawCustomSpriteWithTransform("health_seg", (getScreenWidth() / 2) - 48, 19 + player.Health, 0x40, 0, 0x3500, 0xffffffff, m11, m12, m21, m22)
+	}
+}
+
+function void rendering.Judgement()
+{
+	if ((sonicRhythm.Botplay) || (player.State == player.state.gameOver))	// Botplay and the gameover state doesn't need the lit things so.
+	{
+		Renderer.drawCustomSprite(returnNoteStyle("left_judgement_unlit"), rendering.OffsetArrowsX() + leftNoteOffset,  20, 0x00, 0, 0x3000, 0, 0xffffffff, 0x10000)
+		Renderer.drawCustomSprite(returnNoteStyle("down_judgement_unlit"), rendering.OffsetArrowsX() + downNoteOffset,  20, 0x00, 0, 0x3000, 0, 0xffffffff, 0x10000)
+		Renderer.drawCustomSprite(returnNoteStyle("up_judgement_unlit"), rendering.OffsetArrowsX() + upNoteOffset,  20, 0x00, 0, 0x3000, 0, 0xffffffff, 0x10000)
+		Renderer.drawCustomSprite(returnNoteStyle("right_judgement_unlit"), rendering.OffsetArrowsX() + rightNoteOffset,  20, 0x00, 0, 0x3000, 0, 0xffffffff, 0x10000)
+	}
+	else
+	{
+		Renderer.drawCustomSprite(((control.pad1.pressed & CONTROL_LEFT) ? returnNoteStyle("left_judgement_lit") : (control.pad1.state & CONTROL_LEFT) ? returnNoteStyle("left_judgement_hold") : returnNoteStyle("left_judgement_unlit")), rendering.OffsetArrowsX() + leftNoteOffset,  20, 0x00, 0, 0x3000, 0, 0xffffffff, 0x10000)
+		Renderer.drawCustomSprite(((control.pad1.pressed & CONTROL_DOWN) ? returnNoteStyle("down_judgement_lit") : (control.pad1.state & CONTROL_DOWN) ? returnNoteStyle("down_judgement_hold") : returnNoteStyle("down_judgement_unlit")), rendering.OffsetArrowsX() + downNoteOffset,  20, 0x00, 0, 0x3000, 0, 0xffffffff, 0x10000)
+		Renderer.drawCustomSprite(((control.pad1.pressed & CONTROL_UP) ? returnNoteStyle("up_judgement_lit") : (control.pad1.state & CONTROL_UP) ? returnNoteStyle("up_judgement_hold") : returnNoteStyle("up_judgement_unlit")), rendering.OffsetArrowsX() + upNoteOffset,  20, 0x00, 0, 0x3000, 0, 0xffffffff, 0x10000)
+		Renderer.drawCustomSprite(((control.pad1.pressed & CONTROL_RIGHT) ? returnNoteStyle("right_judgement_lit") : (control.pad1.state & CONTROL_RIGHT) ? returnNoteStyle("right_judgement_hold") : returnNoteStyle("right_judgement_unlit")), rendering.OffsetArrowsX() + rightNoteOffset,  20, 0x00, 0, 0x3000, 0, 0xffffffff, 0x10000)
+	}
+}
+
+function void rendering.Note(u64 key, u16 yOffset, u8 noteType, bool isMine, u16 renderQueue, u8 alpha)
+{
+	Renderer.drawCustomSprite(returnNoteStyle(key), rendering.OffsetArrowsX() + rendering.noteOffset(noteType), yOffset, 0x00, 0, renderQueue, 0, alpha)
+}
+
+function u16 rendering.noteOffset(u8 noteType)
+{
+	return ((noteType == 0) ? leftNoteOffset : (noteType == 1) ? downNoteOffset : (noteType == 2) ? upNoteOffset : rightNoteOffset)
+}
+
+function u16 rendering.OffsetArrowsX()
+{
+	// Returna value to offset the notes' positon.
+	return (getScreenWidth() / 2)
+}
+
+function void rendering.Rating(u64 key)
+{
+	// song.Rating.Timer is set to 255 when a note is hit, and slowly lowers in value by 5 every frame.
+	Renderer.drawCustomSprite(key, (getScreenWidth() / 2), (getScreenHeight() / 2) - 40, 0x00, 0, 0x3200, 0, song.Rating.Timer)	// Careful, this one has alpha channels!!!1!
+}
+
+function void rendering.SongSelectBackground()
+{
+		Renderer.drawCustomSprite("background_song_select", getScreenExtend() - 40, 0, 0x00, 0, 0x2000)
+		Renderer.drawCustomSprite("backend_song_select", getScreenExtend() - 40, 0, 0x00, 0, 0x2100, 0, 0x8d)
+}
+
+/*
+	Note to self - holy crap this is the cleanest script file ive ever done woo hoo
+*/

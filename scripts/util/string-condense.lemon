@@ -1,0 +1,18 @@
+function u64 returnNoteStyle(u64 styled)	// Used for sprite things. Search for this in render-gameplay.lemon for usage. Additionally change this with some code wizardy if you want note options when adding skins and such.
+{
+	u64 arrowStyle
+
+	if (sonicRhythm.NoteStyle == 0)
+		arrowStyle = "_arrow"
+	else if (sonicRhythm.NoteStyle == 1)
+		arrowStyle = "_bar"
+	else if (sonicRhythm.NoteStyle == 2)
+		arrowStyle = "_circle"
+	else if (sonicRhythm.NoteStyle == 3)
+		arrowStyle = "_tnf"
+
+	else	// If all else fails, render arrows.
+		arrowStyle = "_arrow"
+
+	return stringformat("%s%s", styled, arrowStyle)
+}

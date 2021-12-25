@@ -1,0 +1,24 @@
+function void audioSelection(bool songBPMSet)
+{
+	if (songMenuSelection == 2)				// Sonic 3 Credits
+	{
+		if (songBPMSet)
+			song.BPM = 125
+		else
+			Audio.playAudio("26")
+	}
+	else if (songMenuSelection == 1)		// Launch Base Zone 1
+	{
+		if (songBPMSet)
+			song.BPM = 140
+		else
+			Audio.playAudio("0d")
+	}
+	else									// Endless Mine
+	{
+		if (songBPMSet)
+			song.BPM = 125
+		else
+			Audio.playAudio("24")
+	}
+}
